@@ -3,8 +3,8 @@ services:
   r:
     build: .
     ports:
-      - "8787:8787"
+      - "8799:8787"
     volumes:
-      - .:/home/rstudio/workspace
+      - .:/home/rstudio/sawfish-encouners-col-pan
     environment:
       DISABLE_AUTH: "true"
