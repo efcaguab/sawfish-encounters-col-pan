@@ -55,22 +55,6 @@ model_length <- function(length_model_data){
       warmup = 2000,
       cores = 4)
 
-  # m2 <- brm(total_length ~ scaled_year +
-  #             (1 | source_type) +
-  #             (1 | species) +
-  #             (1 | country) +
-  #             (1 | sex) +
-  #             (1 | observation),
-  #           family = "lognormal",
-  #           save_pars = save_pars(all = T),
-  #           data = length_model_data,
-  #           control = list(adapt_delta = 0.99,
-  #                          max_treedepth = 12),
-  #           iter = 3000,
-  #           warmup = 2000,
-  #           cores = 4)
-
-  # list(m1, m2)
 }
 
 plot_length_vs_time <- function(max_length_model, max_length_model_data){
@@ -109,12 +93,6 @@ plot_length_vs_time <- function(max_length_model, max_length_model_data){
     ggplot(aes(x = year)) +
     stat_lineribbon(aes(y = .value, alpha = forcats::fct_rev(ordered(stat(.width)))),
                     .width = c(0.05, 0.66, 0.9), size = 0.5, fill = "black", colour = "black") +
-    # geom_point(data = max_length_model_data, aes(x = reported_collection_year,
-                                                 # y = total_length_cm), shape = 21) +
-    # geom_linerange(data = max_length_model_data, aes(x = reported_collection_year,
-                                                     # ymin = total_length_cm - total_length_cm_se,
-                       # ymax = total_length_cm + total_length_cm_se)) +
-    # scale_x_continuous(breaks = seq(1800, 2000, by = 20)) +
     scale_y_continuous(labels = scales::number_format(scale = 1/100)) +
     theme_minimal() +
     facet_grid(. ~ source_type) +
@@ -122,8 +100,6 @@ plot_length_vs_time <- function(max_length_model, max_length_model_data){
     labs(x = "Year",
          y = "Total length (m)")
 
-
-  # p1
   p2 <- gather_draws(max_length_model, b_scaled_year) %>%
     ggplot(aes(x = 1-exp(.value/attr(max_length_model_data$scaled_year, "scaled:scale")*10))) +
     stat_halfeye(slab_alpha = 0.33, fill = "grey30") +
@@ -142,58 +118,4 @@ plot_length_vs_time <- function(max_length_model, max_length_model_data){
     plot_annotation(tag_levels = "a", tag_suffix = ")")
 
   return(p)
-}
-
-
-function(){
-  library(tidybayes)
-  library(ggdist)
-  library(tidyverse)
-
-  m <- max_length_model
-
-  drake::loadd(length_model_data)
-
-  nd <- expand_grid(scaled_year = seq(min(max_length_model$data$scaled_year), max(max_length_model$data$scaled_year), length.out = 10),
-                    country = "Panama",
-                    # source_type = c(unique(max_length_model$data$source_type), "Any"),
-                    species = "Pristis pristis",
-                    sex = "unknown") %>%
-    mutate(year = (scaled_year * attr(length_model_data$scaled_year, "scaled:scale")) + attr(length_model_data$scaled_year, "scaled:center"))
-
-  pred <- add_fitted_draws(nd, m, re_formula = ~ (1 | country) +
-                             # (1 | source_type)  +
-                             (1 | species),
-                           n = 1000,
-                           allow_new_levels = T)
-
-  pred %>%
-    ggplot(aes(x = year, y = .value)) +
-    stat_lineribbon(aes(alpha = forcats::fct_rev(ordered(stat(.width)))),
-                    .width = c(0.05, 0.66, 0.9), size = 0.5, fill = "grey30") +
-    geom_point(data = max_length_model_data, aes(x = reported_collection_year, y = total_length_cm)) +
-
-    scale_y_continuous(limits = c(0, NA)) +
-    scale_x_continuous()
-    # facet_wrap("source_type", ncol = 3) +
-    theme_minimal() +
-    theme(legend.position = "bottom") +
-    labs(x = "Year",
-         y = "Total length (cm)")
-
-  gather_draws(max_length_model,
-               r_country[level,Intercept],
-               r_sex[level,Intercept],
-               r_species[level,Intercept],
-               r_source_type[level,Intercept]) %>%
-    ungroup() %>%
-    mutate(level = fct_reorder(level, .value, .desc = T)) %>%
-    ggplot(aes(x = .value, y = level)) +
-    geom_vline(xintercept = 0, linetype = 2, size = 0.25) +
-    stat_pointinterval() +
-    facet_grid(".variable", scales = "free_y", space = "free_y") +
-    theme_minimal() +
-    theme(panel.grid.major.y = element_blank())
-
-
 }
