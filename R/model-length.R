@@ -17,21 +17,22 @@ get_length_model_data <- function(encounters, allometric_model){
                       allometric_model) %>%
     mutate(.prediction = exp(.value)) %>%
     summarise(.prediction_se = sqrt(stats::var(.prediction)),
-              .prediction = mean(.prediction)) %>%
-    ungroup() %>%
+              .prediction = mean(.prediction), .groups = "drop") %>%
     mutate(total_length_cm = round(.prediction),
            total_length_cm_se = .prediction_se)
 
   bind_rows(measured, estimated) %>%
     mutate(across(c(total_length_cm, total_length_max), round),
-           scaled_year = scale(reported_collection_year))
+           scaled_year = scale(reported_collection_year)) %>%
+    filter(species == "Pristis pristis")
 
 }
 
 get_max_length_model_data <- function(length_model_data){
   length_model_data %>%
-    dplyr::group_by(reported_collection_year, source_type, species, country, sex) %>%
-    dplyr::filter(total_length_cm == max(total_length_cm))
+    dplyr::group_by(reported_collection_year, source_type) %>%
+    dplyr::filter(total_length_cm == max(total_length_cm)) %>%
+    dplyr::ungroup()
 }
 
 model_length <- function(length_model_data){
@@ -39,20 +40,22 @@ model_length <- function(length_model_data){
     library(brms)
   })
 
+  length_model_data <- length_model_data %>%
+    dplyr::mutate(max_length = round(max(total_length_cm) * 1.2))
+
   # m1 <-
-  brm(total_length_cm ~ scaled_year +
+  brm(total_length_cm | trials(max_length) ~ scaled_year +
         (1 | source_type) +
-        (1 | country) +
-        (1 | sex) +
-        (1 | species) +
         (1 | observation),
-      family = "poisson",
+      family = "binomial",
       save_pars = save_pars(all = T),
+      prior = c(set_prior("student_t(3, 0, 1)", class = "b"),
+                set_prior("student_t(3, 0, 2)", class = "Intercept")),
       data = length_model_data,
       control = list(adapt_delta = 0.99,
                      max_treedepth = 12),
-      iter = 3000,
-      warmup = 2000,
+      iter = 5000,
+      warmup = 2500,
       cores = 4)
 
 }
@@ -71,42 +74,55 @@ plot_length_vs_time <- function(max_length_model, max_length_model_data){
     summarise(max_year = max(reported_collection_year),
               min_year = min(reported_collection_year))
 
-  nd <- expand_grid(scaled_year = seq(min(max_length_model$data$scaled_year), max(max_length_model$data$scaled_year), length.out = 50),
-                    source_type = c("Any", "Non-interview observation", "Literature"),
+  nd <- expand_grid(scaled_year = seq(min(max_length_model$data$scaled_year), max(max_length_model$data$scaled_year), length.out = max(max_length_model_data$reported_collection_year) - min(max_length_model_data$reported_collection_year) + 1),
+                    source_type = c("Any", "Non-interview observation", "Literature", "Museum Collection"),
                     country = "Panama",
                     species = c("Pristis pristis"),
-                    sex = "unknown") %>%
+                    sex = "unknown",
+                    max_length = max_length_model$data$max_length[1]) %>%
     mutate(year = (scaled_year * attr(max_length_model_data$scaled_year, "scaled:scale")) + attr(max_length_model_data$scaled_year, "scaled:center")) %>%
-    left_join(year_range) %>%
-    filter((source_type != "Any" & year <= max_year) | source_type == "Any", (source_type != "Any" & year >= min_year) | source_type == "Any")
+    left_join(year_range) #%>%
+    # filter((source_type != "Any" & year <= max_year) | source_type == "Any", (source_type != "Any" & year >= min_year) | source_type == "Any")
 
-  p1 <- add_fitted_draws(nd, max_length_model,
-                         re_formula = ~ (1 | source_type) +
-                           (1 | country) +
-                           (1 | sex) +
-                           (1 | species) ,
+  model_fitted_draws <- add_fitted_draws(nd, max_length_model,
+                         re_formula = ~ (1 | source_type),
                    # n = 1000,
-                   allow_new_levels = T)%>%
+                   allow_new_levels = T) %>%
     mutate(year = (scaled_year * attr(max_length_model_data$scaled_year, "scaled:scale")) + attr(max_length_model_data$scaled_year, "scaled:center")) %>%
     mutate(source_type = case_when(source_type == "Any" ~ "Overall", TRUE ~ source_type)) %>%
-    mutate(source_type = fct_relevel(source_type, "Overall")) %>%
+    mutate(source_type = fct_relevel(source_type, "Overall"))
+
+  p1 <- model_fitted_draws %>%
+    filter(source_type == "Overall") %>%
     ggplot(aes(x = year)) +
     stat_lineribbon(aes(y = .value, alpha = forcats::fct_rev(ordered(stat(.width)))),
                     .width = c(0.05, 0.66, 0.9), size = 0.5, fill = "black", colour = "black") +
+    geom_point(data = max_length_model_data,
+               aes(x = reported_collection_year, y = total_length_cm),
+               shape = 21) +
+    geom_linerange(data = max_length_model_data,
+                   aes(x = reported_collection_year,
+                       ymax = total_length_cm + total_length_cm_se,
+                       ymin = total_length_cm -total_length_cm_se)) +
     scale_y_continuous(labels = scales::number_format(scale = 1/100)) +
+    scale_x_continuous() +
     theme_minimal() +
-    facet_grid(. ~ source_type) +
+    # facet_grid(. ~ source_type) +
     theme(legend.position = "none") +
     labs(x = "Year",
          y = "Total length (m)")
 
-  p2 <- gather_draws(max_length_model, b_scaled_year) %>%
-    ggplot(aes(x = 1-exp(.value/attr(max_length_model_data$scaled_year, "scaled:scale")*10))) +
-    stat_halfeye(slab_alpha = 0.33, fill = "grey30") +
+  p2 <- model_fitted_draws %>%
+    group_by(.draw, source_type) %>%
+    mutate(ten_year_diff = (.value - lead(.value, 10))/.value) %>%
+    filter(!is.na(ten_year_diff),
+           source_type == "Overall") %>%
+    ggplot(aes(x = ten_year_diff)) +
+    stat_halfeye(slab_alpha = 0.33, fill = "grey30", .width = c(0.66, 0.9)) +
     geom_vline(xintercept = 0, linetype = 2, size = 0.25) +
     scale_x_continuous(labels = scales::label_percent()) +
     coord_cartesian(xlim = c(0, NA), clip = "off") +
-    labs(x = "Average rate of decrease (per decade)",
+    labs(x = "Rate of decrease (per decade)",
          y = "Density") +
     theme_minimal() +
     theme(axis.text.y = element_blank(),
@@ -114,8 +130,7 @@ plot_length_vs_time <- function(max_length_model, max_length_model_data){
           panel.grid.major.y = element_blank(),
           panel.grid.minor.y = element_blank())
 
-  p <- p1 + p2 + plot_layout(ncol = 1, heights = c(1,0.2)) +
-    plot_annotation(tag_levels = "a", tag_suffix = ")")
-
+  p <- p1 + p2 + plot_layout(ncol = 1, heights = c(1,0.2))
+  p <- `attr<-`(p, "data", model_fitted_draws)
   return(p)
 }
