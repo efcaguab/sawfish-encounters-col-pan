@@ -123,8 +123,89 @@ drake::readd(fig_max_length_vs_time) +
 ![](data-exploration_files/figure-gfm/unnamed-chunk-4-1.png)<!-- -->
 
 ``` r
-drake::readd(fig_max_length_vs_time) +
+drake::readd(fig_length_vs_time) +
   plot_annotation(title = "Modelling all total length")
 ```
 
 ![](data-exploration_files/figure-gfm/unnamed-chunk-4-2.png)<!-- -->
+
+## Encounters
+
+``` r
+drake::loadd(encounters)
+
+enc_data <- encounters %>%
+  filter(reported_collection_year > 1800) %>%
+  mutate(source_type = fct_reorder(source_type, reported_collection_year, median), 
+         country = fct_infreq(country))
+
+enc_data %>%
+  ggplot(aes(x = reported_collection_year, fill = source_type)) + 
+  geom_histogram(binwidth = 10, center = 2000) +
+  facet_wrap("country", ncol = 2) +
+  # scale_fill_brewer(palette = "Set1") + 
+  # scale_y_continuous(sec.axis = sec_axis(~ . / nrow(enc_data), 
+                                         # labels = scales::label_percent(), name = "Percentage of encounters")) +
+  scale_fill_viridis_d() +
+  # scale_x_binned(stat  = "co") +
+  theme_minimal() +
+  theme(legend.position = "top", 
+        legend.title = element_blank()) +
+  labs(x = "Reported collection year", 
+       y = "Number of encounters")
+```
+
+![](data-exploration_files/figure-gfm/unnamed-chunk-5-1.png)<!-- -->
+
+``` r
+library(rnaturalearth)
+library(rnaturalearthhires)
+world <- ne_countries(country = c("Colombia", "Panama", "Costa Rica"), scale = "large", returnclass = "sf")
+
+map_data <-
+  encounters %>%
+    filter(reported_collection_year > 1800) %>%
+  mutate(source_type = fct_reorder(source_type, reported_collection_year, median), 
+         across(c(longitude, latitude), as.numeric)) %>%
+  filter(latitude > 0)
+```
+
+    ## Warning: Problem with `mutate()` input `..2`.
+    ## ℹ NAs introduced by coercion
+    ## ℹ Input `..2` is `across(c(longitude, latitude), as.numeric)`.
+
+    ## Warning in fn(col, ...): NAs introduced by coercion
+
+    ## Warning: Problem with `mutate()` input `..2`.
+    ## ℹ NAs introduced by coercion
+    ## ℹ Input `..2` is `across(c(longitude, latitude), as.numeric)`.
+
+    ## Warning in fn(col, ...): NAs introduced by coercion
+
+``` r
+p1 <- ggplot(data = map_data) + 
+  geom_sf(data = world, inherit.aes = F, alpha = 0.5, colour = "grey30") +
+  geom_point(data = map_data, aes(x = longitude, y = latitude, fill = source_type), shape = 21) + 
+  scale_fill_viridis_d() +
+  theme_minimal() +
+  theme(axis.title = element_blank()) +
+  coord_sf(xlim = c(-83.9, -73), ylim = c(4.1, 11.9), expand = FALSE) +
+  scale_x_continuous(breaks = seq(-90, 90, by = 2)) +
+  scale_y_continuous(breaks = seq(-90, 90, by = 2)) +
+  labs(fill = "Source")
+
+p2 <- ggplot(data = map_data) + 
+  geom_sf(data = world, inherit.aes = F, alpha = 0.5, colour = "grey30") +
+  geom_point(data = map_data, aes(x = longitude, y = latitude, fill = reported_collection_year), shape = 21) + 
+  scale_fill_stepsn(breaks = seq(1000, 3000, by = 25), colours = viridis::viridis(2)) +
+  theme_minimal() +
+  theme(axis.title = element_blank()) +
+  coord_sf(xlim = c(-83.9, -73), ylim = c(4.1, 11.9), expand = FALSE) +
+  scale_x_continuous(breaks = seq(-90, 90, by = 2)) +
+  scale_y_continuous(breaks = seq(-90, 90, by = 2)) +
+  labs(fill = "Year")
+
+p1 + p2 + plot_layout(ncol = 1) 
+```
+
+![](data-exploration_files/figure-gfm/unnamed-chunk-6-1.png)<!-- -->
