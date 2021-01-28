@@ -19,6 +19,7 @@ full_plan <- drake_plan(
   max_length_model = model_length(max_length_model_data),
   fig_length_vs_time = plot_length_vs_time(length_model, length_model_data),
   fig_max_length_vs_time = plot_length_vs_time(max_length_model, max_length_model_data),
+  data_exp_notebook = target(rmarkdown::render(knitr_in("notebooks/data-exploration.Rmd"))),
 )
 
 # Execute plan ------------------------------------------------------------
