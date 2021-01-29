@@ -1,0 +1,10 @@
+default:
+  models:
+    cores: 4
+    iter: 5000
+    warmup: 2500
+
+test:
+  models:
+    iter: 1250
+    warmup: 1000

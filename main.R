@@ -6,6 +6,7 @@ library(drake)
 # load functions
 f <- lapply(list.files(path = here::here("R"), full.names = TRUE,
                        include.dirs = TRUE, pattern = "*.R"), source)
+options(proj_config = config::get())
 
 # Plan analysis ------------------------------------------------------------
 
