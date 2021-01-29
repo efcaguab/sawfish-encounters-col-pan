@@ -54,12 +54,12 @@ allometric_coefficients <- spread_draws(allometric_model, r_species[species,parm
 ```{r results-max-length, include = FALSE}
 drake::loadd(max_length_model_data)
 drake::loadd(max_length_model)
-drake::loadd(fig_max_length_vs_time)
+drake::loadd(max_length_model_fitted_draws)
 
 estimated_lengths <- max_length_model_data %>%
   filter(total_length_cm_se > 0)
 
-fitted_draws_max_length_model <- attr(fig_max_length_vs_time, "data") %>%
+fitted_draws_max_length_model <- max_length_model_fitted_draws %>%
   group_by(.draw, source_type) %>%
   mutate(ten_year_diff = (.value - lead(.value, 10))/.value) %>%
   filter(!is.na(ten_year_diff), 
@@ -92,6 +92,8 @@ The median rate of this decrease is `r decrease_per_decade[[2]]$ten_year_diff` p
 We found no substantial differences between the intercepts of different record sources (Figure S2).
 
 ```{r length-resuts-figure, echo = F, fig.width=4, fig.height=4}
+drake::loadd(fig_max_length_vs_time)
+
 fig_max_length_vs_time +
   plot_annotation(tag_levels = "a", tag_suffix = ")")
 ```
@@ -114,7 +116,7 @@ Then a linear regression was fitted; total length was the response variable and 
 This was done because our primary objective is the estimation of total length and not the estimation of the allometric coefficient (in which case a major axis regression would have been more appropriate).
 In addition, a random intercept was calculated for each species type. 
 In the absence of previous information in the literature, we used weakly informative prior based on a Student-t distribution with 3 degrees of freedom, a median of zero, and a scale of two, was used for all model coefficients except the one corresponding to the slope of the rostrum-total length relationship where a similar Student-t distribution with a median of one was used. 
-The bayesian model was fitted using brms 2.14.4 (Bürkner 2017, 2018) which uses a Hamiltonian Markov Chain Monte Carlo algorithm implemented in Stan (Stan Development Team, 2020). 
+The bayesian model was fitted using brms 2.14.4. 
 Specifically, the model was fitted using four chains of 5000 iterations each (including 2500 for warm-up). 
 
 The model accounted for a large proportion of variance in total length (R^2^ = `r r2[[1]]`, 90% CI `r r2[[3]]` to `r r2[[4]]`). 
@@ -127,12 +129,12 @@ The estimated allometric intercept was `r allometric_coefficients$log_b` (`r sca
 ```{r results-all-length, include = FALSE}
 drake::loadd(length_model_data)
 drake::loadd(length_model)
-drake::loadd(fig_length_vs_time)
+drake::loadd(length_model_fitted_draws)
 
 estimated_lengths_all <- length_model_data %>%
   filter(total_length_cm_se > 0)
 
-fitted_draws_length_model <- attr(fig_length_vs_time, "data") %>%
+fitted_draws_length_model <- length_model_fitted_draws %>%
   group_by(.draw, source_type) %>%
   mutate(ten_year_diff = (.value - lead(.value, 10))/.value) %>%
   filter(!is.na(ten_year_diff), 

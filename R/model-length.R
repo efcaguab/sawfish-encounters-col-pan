@@ -60,7 +60,7 @@ model_length <- function(length_model_data){
 
 }
 
-plot_length_vs_time <- function(max_length_model, max_length_model_data){
+fit_length_time_draws <- function(max_length_model, max_length_model_data){
 
   suppressPackageStartupMessages({
     library(tidyverse)
@@ -82,15 +82,25 @@ plot_length_vs_time <- function(max_length_model, max_length_model_data){
                     max_length = max_length_model$data$max_length[1]) %>%
     mutate(year = (scaled_year * attr(max_length_model_data$scaled_year, "scaled:scale")) + attr(max_length_model_data$scaled_year, "scaled:center")) %>%
     left_join(year_range) #%>%
-    # filter((source_type != "Any" & year <= max_year) | source_type == "Any", (source_type != "Any" & year >= min_year) | source_type == "Any")
+  # filter((source_type != "Any" & year <= max_year) | source_type == "Any", (source_type != "Any" & year >= min_year) | source_type == "Any")
 
-  model_fitted_draws <- add_fitted_draws(nd, max_length_model,
-                         re_formula = ~ (1 | source_type),
-                   # n = 1000,
-                   allow_new_levels = T) %>%
+  add_fitted_draws(nd, max_length_model,
+                                         re_formula = ~ (1 | source_type),
+                                         # n = 1000,
+                                         allow_new_levels = T) %>%
     mutate(year = (scaled_year * attr(max_length_model_data$scaled_year, "scaled:scale")) + attr(max_length_model_data$scaled_year, "scaled:center")) %>%
     mutate(source_type = case_when(source_type == "Any" ~ "Overall", TRUE ~ source_type)) %>%
     mutate(source_type = fct_relevel(source_type, "Overall"))
+}
+
+plot_length_vs_time <- function(model_fitted_draws, max_length_model_data){
+
+  suppressPackageStartupMessages({
+    library(tidyverse)
+    library(tidybayes)
+    library(ggdist)
+    library(patchwork)
+  })
 
   p1 <- model_fitted_draws %>%
     filter(source_type == "Overall") %>%
@@ -131,6 +141,5 @@ plot_length_vs_time <- function(max_length_model, max_length_model_data){
           panel.grid.minor.y = element_blank())
 
   p <- p1 + p2 + plot_layout(ncol = 1, heights = c(1,0.2))
-  p <- `attr<-`(p, "data", model_fitted_draws)
   return(p)
 }

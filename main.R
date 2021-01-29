@@ -16,11 +16,14 @@ full_plan <- drake_plan(
   allometric_model = model_allometry(allometric_model_data),
   length_model_data = get_length_model_data(encounters, allometric_model),
   max_length_model_data = get_max_length_model_data(length_model_data),
-  length_model = model_length(length_model_data),
   max_length_model = model_length(max_length_model_data),
-  fig_length_vs_time = plot_length_vs_time(length_model, length_model_data),
-  fig_max_length_vs_time = plot_length_vs_time(max_length_model, max_length_model_data),
+  max_length_model_fitted_draws = fit_length_time_draws(max_length_model, max_length_model_data),
+  fig_max_length_vs_time = plot_length_vs_time(max_length_model_fitted_draws, max_length_model_data),
+  length_model = model_length(length_model_data),
+  length_model_fitted_draws = fit_length_time_draws(length_model, length_model_data),
+  fig_length_vs_time = plot_length_vs_time(length_model_fitted_draws, length_model_data),
   data_exp_notebook = target(rmarkdown::render(knitr_in("notebooks/data-exploration.Rmd"))),
+  paper_notebook = target(rmarkdown::render(knitr_in("notebooks/paper-document.Rmd"))),
 )
 
 # Execute plan ------------------------------------------------------------
