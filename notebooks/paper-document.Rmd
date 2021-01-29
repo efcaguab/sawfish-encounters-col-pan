@@ -17,21 +17,20 @@ ci_width <- 0.9
 
 A (bayesian) regression model was constructed to investigate how sawfish size has changed over time. 
 Records in which both total length and date were available were selected. 
-These records were supplemented with estimations of total length was estimated using based on rostrum length and the allometric relationship between this body part and the total length (Supporting Information S1). 
+These records were supplemented with estimations of total length using the allometric relationship between rostra and the total length (Supporting Information S1). 
 This analysis was focused in the *Pristis pristis* size, as this was the species where most complete records were available. 
 These records were further filtered to include only the largest total length measurement for a given year/source type combination. 
-This was done so, because due to the limited number of records, it is unlikely the data provides a complete picture of the size distribution changes. 
-Many of the records are likely to correspond to neonate and juvenile individuals and therefore may offer little information about overal size changes. 
-Furthermore, by focusing in the largest individuals, across time and a change on the maximum observed size provides information about ... [Juli: please add here an explanation of why max size is also a biologically relevant metric].
+This was done because the limited number of records in any given year, makes it unlikely that the data provide a complete picture of the size distribution changes. 
+Many of the records are likely to correspond to neonate and juvenile individuals and therefore may offer little information about overall size changes. 
+Furthermore, by focusing on the largest individuals across time and a change on the maximum observed size provides information about ... [Juli: please add here an explanation of why max size is also a biologically relevant metric].
 Importantly, the results do not qualitatively change whether we include all records or just those with the largest individuals (Supporting Information S2).
 
 The response variable in the model was total length and the explanatory variable was the year of record. 
 The year of record was scaled to have a zero mean and unit variance prior to inclusion in the model. 
-In addition, to control for potential biases in the data random intercepts for the country of record and the source of the record were calculated (museum collection, literature, ISED, interview and non-interview observation). 
-Total length was modelled using a Binomial distribution. 
-As opposed to a Poission distribution, which is also commonly used to model positive-only length data, as this distribution is ideal for modelling integer values within a specified range; this is important as total length has an upper bound. 
+In addition, to control for potential biases in the data, random intercepts for the country of record and the source of the record (museum collection, literature, ISED, interview and non-interview observation) were calculated. 
+Total length was modelled using a Binomial distribution in preference to a Poission distribution because this distribution is ideal for modelling integer values within a specified range, which is important in this case because total length has an upper bound. 
 This upper bound was set at 120% the length of the largest measured specimen. 
-To account for overdispersion in the data each observation was included as an additional random intercept. 
+To account for overdispersion in the data, each observation was included as an additional random intercept. 
 A weakly informative prior based on a Student-t distribution with 3 degrees of freedom, a median of zero, and a scale of two, was used for all model coefficients. 
 The bayesian model was fitted using `brms 2.14.4` (Bürkner 2017, 2018) which uses a Hamiltonian Markov Chain Monte Carlo algorithm implemented in `Stan` (Stan Development Team, 2020). 
 The model was fitted using four chains of 5000 iterations each (including 2500 for warm-up).
@@ -82,7 +81,7 @@ decrease_per_decade <- c(0.66, 0.9, 0.95) %>%
   purrr::array_tree()
 ```   
 
-The relationship between rostrum and total length for the sawfish *Pristis pristis* was more or less isometric (Supporting Information S1). 
+The relationship between rostrum and total length for the largetooth sawfish *Pristis pristis* was approximately isometric (Supporting Information S1). 
 Indeed the estimated allometric coefficient between these two metric was `r allometric_coefficients$alpha` (`r scales::percent(ci_width)` credible interval `r allometric_coefficients$alpha.lower` to `r allometric_coefficients$alpha.upper`). 
 
 The total length model was based on `r nrow(max_length_model_data)` records. 
