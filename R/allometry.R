@@ -16,7 +16,7 @@ model_allometry <- function(allometric_model_data){
                      max_treedepth = 15),
       prior = c(set_prior("student_t(3, 1, 1)", class = "b"),
                 set_prior("student_t(3, 0, 2)", class = "Intercept")),
-      iter = 5000,
-      warmup = 2500,
+      iter = getOption("proj_config")$models$iter,
+      warmup = getOption("proj_config")$models$warmup,
       cores = 4)
 }

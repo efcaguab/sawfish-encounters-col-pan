@@ -54,8 +54,8 @@ model_length <- function(length_model_data){
       data = length_model_data,
       control = list(adapt_delta = 0.99,
                      max_treedepth = 12),
-      iter = 5000,
-      warmup = 2500,
+      iter = getOption("proj_config")$models$iter,
+      warmup = getOption("proj_config")$models$warmup,
       cores = 4)
 
 }
