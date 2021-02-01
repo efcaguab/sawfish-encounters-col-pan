@@ -10,6 +10,7 @@ library(patchwork)
 library(brms)
 library(tidybayes)
 library(broom.mixed)
+library(english)
 ci_width <- 0.9
 ```
 
@@ -84,8 +85,8 @@ decrease_per_decade <- c(0.66, 0.9, 0.95) %>%
 The relationship between rostrum and total length for the largetooth sawfish *Pristis pristis* was approximately isometric (Supporting Information S1). 
 Indeed the estimated allometric coefficient between these two metric was `r allometric_coefficients$alpha` (`r scales::percent(ci_width)` credible interval `r allometric_coefficients$alpha.lower` to `r allometric_coefficients$alpha.upper`). 
 
-The total length model was based on `r nrow(max_length_model_data)` records. 
-In `r nrow(estimated_lengths)` of them, total length was estimated using the allometric relationship between rostrum and total length.
+The total length model was based on `r nrow(max_length_model_data)` records.
+In `r words(nrow(estimated_lengths))` of them, total length was estimated using the allometric relationship between rostrum and total length.
 There is a `r scales::percent(pd_year$p, accuracy = 0.1)` probability that the total length of the largest observed sawfish individuals (*Pristis pristis*) has decreased between `r min(max_length_model_data$reported_collection_year)` and `r max(max_length_model_data$reported_collection_year)` (Figure XXa, Table S2). 
 The median rate of this decrease is `r decrease_per_decade[[2]]$ten_year_diff` per decade (`r scales::percent(ci_width)` CI `r decrease_per_decade[[2]]$.lower` to `r decrease_per_decade[[2]]$.upper`; Figure XXb).
 We found no substantial differences between the intercepts of different record sources (Figure S2).
@@ -158,7 +159,7 @@ decrease_per_decade_all <- c(0.66, 0.9, 0.95) %>%
 
 The results are qualitatively similar when all observations in which total length is available, not just those for the largest individuals per year, are included in the model. 
 The total length model with all records was based on `r nrow(length_model_data)` records. 
-In `r nrow(estimated_lengths_all)` of them, total length was estimated using the allometric relationship between rostrum and total length.
+In `r words(nrow(estimated_lengths_all))` of them, total length was estimated using the allometric relationship between rostrum and total length.
 In this alternative model, total length of encountered sawfish (*Pristis pristis*) individuals was also very likely to decrease over the years (`r scales::percent(pd_year_all$p, accuracy = 0.1)` probability). 
 The estimated coefficient for the year parameter was `r est_year_all$b_scaled_year` (`r scales::percent(ci_width)` CI `r est_year_all$.lower` to `r est_year_all$.upper`).
 This coefficient corresponds to a median rate of decrease of `r decrease_per_decade_all[[2]]$ten_year_diff` per decade (`r scales::percent(ci_width)` CI `r decrease_per_decade_all[[2]]$.lower` to `r decrease_per_decade_all[[2]]$.upper`).
