@@ -23,7 +23,7 @@ encounters %>%
     ## 4 FALSE                   TRUE                  TRUE                          12
     ## 5 TRUE                    FALSE                 FALSE                         43
     ## 6 TRUE                    FALSE                 TRUE                           3
-    ## 7 TRUE                    TRUE                  FALSE                        157
+    ## 7 TRUE                    TRUE                  FALSE                        153
     ## 8 TRUE                    TRUE                  TRUE                          21
 
 ``` r
@@ -36,7 +36,7 @@ encounters %>%
     ##   country  species         ocean   sex     source_type              
     ##   <chr>    <chr>           <chr>   <chr>   <chr>                    
     ## 1 Panama   Pristis pristis pacific unknown Museum Collection        
-    ## 2 Panama   Pristis sp.     pacific unknown ISED                     
+    ## 2 Panama   Pristis pristis pacific unknown ISED                     
     ## 3 Colombia Pristis sp.     unknown unknown ISED                     
     ## 4 Panama   Pristis pristis pacific unknown Literature               
     ## 5 Panama   Pristis pristis pacific unknown Non-interview observation

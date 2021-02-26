@@ -48,14 +48,14 @@ Hamiltonian Markov Chain Monte Carlo algorithm implemented in `Stan`
 The relationship between rostrum and total length for the largetooth
 sawfish *Pristis pristis* was approximately isometric (Supporting
 Information S1). Indeed the estimated allometric coefficient between
-these two metric was 1.02 (90% credible interval 0.83 to 1.33).
+these two metric was 0.9 (90% credible interval 0.83 to 1).
 
-The total length model was based on 14 records. In four of them, total
+The total length model was based on 20 records. In five of them, total
 length was estimated using the allometric relationship between rostrum
-and total length. There is a 98.0% probability that the total length of
+and total length. There is a 92.8% probability that the total length of
 the largest observed sawfish individuals (*Pristis pristis*) has
 decreased between 1896 and 2016 (Figure XXa, Table S2). The median rate
-of this decrease is 10% per decade (90% CI 2.6% to 18.7%; Figure XXb).
+of this decrease is 5% per decade (90% CI -0.8% to 12.1%; Figure XXb).
 We found no substantial differences between the intercepts of different
 record sources (Figure S2).
 
@@ -74,7 +74,7 @@ decade. The point depict the median value and lines correspond to 66 and
 ### S1: Estimating total length from rostrum length
 
 A (bayesian) regression model was constructed to investigate the
-allometric relationship between rostrum and total length. A total of 9
+allometric relationship between rostrum and total length. A total of 10
 records in which both of these measurements were available were
 selected. As is common in allometric estimation, both of these metrics
 were log transformed. Then a linear regression was fitted; total length
@@ -93,25 +93,24 @@ with a median of one was used. The bayesian model was fitted using brms
 iterations each (including 2500 for warm-up).
 
 The model accounted for a large proportion of variance in total length
-(R<sup>2</sup> = 0.94, 90% CI 0.87 to 0.96). Total length scales
+(R<sup>2</sup> = 0.98, 90% CI 0.96 to 0.99). Total length scales
 isometrically with rostrum length in *Pristis pristis* (Figure S1; Table
 S1). Using the model coefficients, the estimated allometric coefficient
-between these two metric was 1.02 (90% credible interval 0.83 to 1.33).
-The estimated allometric intercept was -1.58 (90% CI -3.61 to -0.33).
+between these two metric was 0.9 (90% credible interval 0.83 to 1). The
+estimated allometric intercept was -0.92 (90% CI -1.44 to -0.52).
 
 ### S2: Including all size records
 
 The results are qualitatively similar when all observations in which
 total length is available, not just those for the largest individuals
 per year, are included in the model. The total length model with all
-records was based on 47 records. In four of them, total length was
+records was based on 54 records. In five of them, total length was
 estimated using the allometric relationship between rostrum and total
 length. In this alternative model, total length of encountered sawfish
 (*Pristis pristis*) individuals was also very likely to decrease over
-the years (99.8% probability). The estimated coefficient for the year
-parameter was -0.80 (90% CI -1.26 to -0.33). This coefficient
-corresponds to a median rate of decrease of 14% per decade (90% CI 5.3%
-to 25.9%).
+the years (52.6% probability). The estimated coefficient for the year
+parameter was -0.02 (90% CI -0.48 to 0.42). This coefficient corresponds
+to a median rate of decrease of 0% per decade (90% CI -9.6% to 9.5%).
 
 ### Supplementary Figures
 
@@ -136,20 +135,20 @@ correspond to 95% credible intervals*.
 
 | effect    | group    | term                | estimate | conf.low | conf.high |
 | :-------- | :------- | :------------------ | -------: | -------: | --------: |
-| fixed     | \-       | (Intercept)         |     0.81 |   \-4.43 |      3.24 |
-| fixed     | \-       | rostrum\_length\_cm |     0.98 |     0.68 |      1.27 |
-| ran\_pars | species  | sd\_\_(Intercept)   |     1.43 |     0.02 |      6.35 |
-| ran\_pars | Residual | sd\_\_Observation   |     0.21 |     0.11 |      0.42 |
+| fixed     | \-       | (Intercept)         |     0.44 |   \-3.81 |      2.24 |
+| fixed     | \-       | rostrum\_length\_cm |     1.10 |     0.96 |      1.24 |
+| ran\_pars | species  | sd\_\_(Intercept)   |     1.33 |     0.03 |      5.87 |
+| ran\_pars | Residual | sd\_\_Observation   |     0.16 |     0.09 |      0.30 |
 
 *Table S2: Model coefficients for the total length model. Intervals
 correspond to 95% credible intervals*.
 
 | effect    | group        | term              | estimate | conf.low | conf.high |
 | :-------- | :----------- | :---------------- | -------: | -------: | --------: |
-| fixed     | \-           | (Intercept)       |   \-0.31 |   \-1.30 |      0.68 |
-| fixed     | \-           | scaled\_year      |   \-0.62 |   \-1.13 |    \-0.03 |
-| ran\_pars | observation  | sd\_\_(Intercept) |     0.83 |     0.54 |      1.33 |
-| ran\_pars | source\_type | sd\_\_(Intercept) |     0.61 |     0.02 |      2.16 |
+| fixed     | \-           | (Intercept)       |   \-0.33 |   \-1.01 |      0.37 |
+| fixed     | \-           | scaled\_year      |   \-0.34 |   \-0.80 |      0.13 |
+| ran\_pars | observation  | sd\_\_(Intercept) |     0.93 |     0.66 |      1.36 |
+| ran\_pars | source\_type | sd\_\_(Intercept) |     0.37 |     0.01 |      1.33 |
 
 ## References
 
