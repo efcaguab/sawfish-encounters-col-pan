@@ -106,7 +106,8 @@ plot_length_vs_time <- function(model_fitted_draws, max_length_model_data){
     filter(source_type == "Overall") %>%
     ggplot(aes(x = year)) +
     stat_lineribbon(aes(y = .value, alpha = forcats::fct_rev(ordered(stat(.width)))),
-                    .width = c(0.05, 0.66, 0.9), size = 0.5, fill = "black", colour = "black") +
+                    .width = c(0.05, 0.66, 0.9), size = 0.5, fill = "black",
+                    colour = NA) +
     geom_point(data = max_length_model_data,
                aes(x = reported_collection_year, y = total_length_cm),
                shape = 21) +
@@ -116,6 +117,7 @@ plot_length_vs_time <- function(model_fitted_draws, max_length_model_data){
                        ymin = total_length_cm -total_length_cm_se)) +
     scale_y_continuous(labels = scales::number_format(scale = 1/100)) +
     scale_x_continuous() +
+    scale_alpha_discrete(range = c(0.1, 0.5)) +
     theme_minimal() +
     # facet_grid(. ~ source_type) +
     theme(legend.position = "none") +
