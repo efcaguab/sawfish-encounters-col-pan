@@ -110,7 +110,7 @@ plot_length_vs_time <- function(model_fitted_draws, max_length_model_data){
                     colour = NA) +
     geom_point(data = max_length_model_data,
                aes(x = reported_collection_year, y = total_length_cm),
-               shape = 21) +
+               shape = 21, size = 1) +
     geom_linerange(data = max_length_model_data,
                    aes(x = reported_collection_year,
                        ymax = total_length_cm + total_length_cm_se,
@@ -118,9 +118,10 @@ plot_length_vs_time <- function(model_fitted_draws, max_length_model_data){
     scale_y_continuous(labels = scales::number_format(scale = 1/100)) +
     scale_x_continuous() +
     scale_alpha_discrete(range = c(0.1, 0.5)) +
-    theme_minimal() +
-    # facet_grid(. ~ source_type) +
-    theme(legend.position = "none") +
+    theme_minimal(base_size = 10) +
+    theme(axis.title = element_text(size = 9),
+          legend.position = "none",
+          title = element_text(size = 9)) +
     labs(x = "Year",
          y = "Total length (m)")
 
@@ -130,18 +131,24 @@ plot_length_vs_time <- function(model_fitted_draws, max_length_model_data){
     filter(!is.na(ten_year_diff),
            source_type == "Overall") %>%
     ggplot(aes(x = ten_year_diff)) +
-    stat_halfeye(slab_alpha = 0.33, fill = "grey30", .width = c(0.66, 0.9)) +
+    stat_halfeye(slab_alpha = 0.33, fill = "grey30", .width = c(0.66, 0.9),
+                 interval_size_range = c(0.5,1), fatten_point = 1.2) +
     geom_vline(xintercept = 0, linetype = 2, size = 0.25) +
     scale_x_continuous(labels = scales::label_percent()) +
     coord_cartesian(xlim = c(0, NA), clip = "off") +
     labs(x = "Rate of decrease (per decade)",
          y = "Density") +
-    theme_minimal() +
-    theme(axis.text.y = element_blank(),
+    theme_minimal(base_size = 10) +
+    theme(axis.title = element_text(size = 9),
+          axis.text.y = element_blank(),
           axis.title.y = element_blank(),
           panel.grid.major.y = element_blank(),
-          panel.grid.minor.y = element_blank())
+          panel.grid.minor.y = element_blank(),
+          title = element_text(size = 9))
 
-  p <- p1 + p2 + plot_layout(ncol = 1, heights = c(1,0.2))
+  p <- p1 + p2 +
+    plot_layout(ncol = 1, heights = c(1,0.2)) +
+    plot_annotation(tag_levels = "a", tag_suffix = ")")
+
   return(p)
 }
