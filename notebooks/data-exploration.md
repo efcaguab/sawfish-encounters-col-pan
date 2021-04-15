@@ -35,12 +35,12 @@ encounters %>%
     ## # A tibble: 6 x 5
     ##   country  species         ocean   sex     source_type              
     ##   <chr>    <chr>           <chr>   <chr>   <chr>                    
-    ## 1 Panama   Pristis pristis pacific unknown Museum Collection        
-    ## 2 Panama   Pristis pristis pacific unknown ISED                     
-    ## 3 Colombia Pristis sp.     unknown unknown ISED                     
-    ## 4 Panama   Pristis pristis pacific unknown Literature               
-    ## 5 Panama   Pristis pristis pacific unknown Non-interview observation
-    ## 6 Panama   Pristis pristis pacific unknown Interview
+    ## 1 Panama   Pristis pristis pacific unknown Literature               
+    ## 2 Panama   Pristis pristis pacific unknown Interview                
+    ## 3 Panama   Pristis pristis pacific unknown Non-interview observation
+    ## 4 Panama   Pristis pristis pacific unknown Museum Collection        
+    ## 5 Panama   Pristis pristis pacific unknown ISED                     
+    ## 6 Colombia Pristis sp.     unknown unknown ISED
 
 ## Allometric relationship
 
