@@ -94,8 +94,7 @@ We found no substantial differences between the intercepts of different record s
 ```{r length-resuts-figure, echo = F, fig.width=4, fig.height=4}
 drake::loadd(fig_max_length_vs_time)
 
-fig_max_length_vs_time +
-  plot_annotation(tag_levels = "a", tag_suffix = ")")
+fig_max_length_vs_time 
 ```
 
 *Figure XX: Maximum length of sawfish Pristis pristis has very likely declined over time. (a) Dots indicate length of records included in the model; vertical bars indicate the standard error of total lengths estimated from rostrum length. Grey bands indicate 66 and 90% credible intervals. (b) Distribution of the rate of decrease in total length per decade. The point depict the median value and lines correspond to 66 and 90% credible intervals.*
