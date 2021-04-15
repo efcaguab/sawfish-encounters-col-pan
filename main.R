@@ -2,6 +2,7 @@
 
 library(magrittr)
 library(drake)
+library(patchwork)
 
 # load functions
 f <- lapply(list.files(path = here::here("R"), full.names = TRUE,
@@ -24,7 +25,9 @@ full_plan <- drake_plan(
   fig_length_vs_time = plot_length_vs_time(length_model_fitted_draws, length_model_data),
   data_exp_notebook = target(rmarkdown::render(knitr_in("notebooks/data-exploration.Rmd"))),
   paper_notebook = target(rmarkdown::render(knitr_in("notebooks/paper-document.Rmd"))),
-  map_fig = plot_map(encounters, file_out("figures/map.pdf"))
+  fig_map_pdf = plot_map(encounters, file_out("figures/map.pdf")),
+  fig_length_pdf =  ggplot2::ggsave(plot = fig_max_length_vs_time,
+                                    file_out("figures/length-time.pdf"), width = 8, height = 8, units = "cm")
 )
 
 # Execute plan ------------------------------------------------------------
