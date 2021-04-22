@@ -27,6 +27,7 @@ full_plan <- drake_plan(
   paper_notebook = target(rmarkdown::render(knitr_in("notebooks/paper-document.Rmd"))),
   fig_map_pdf = plot_map(encounters, file_out("figures/map.pdf")),
   fig_encounters_pdf = plot_histogram(encounters, file_out("figures/encounters.pdf")),
+  fig_allometry_pdf = plot_allometry(allometric_model, file_out("figures/allometry.pdf")),
   fig_length_pdf =  ggplot2::ggsave(plot = fig_max_length_vs_time,
                                     file_out("figures/length-time.pdf"), width = 8, height = 8, units = "cm")
 )

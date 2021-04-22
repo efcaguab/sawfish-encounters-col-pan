@@ -101,3 +101,38 @@ plot_histogram <- function(encounters, path){
 
   ggsave(path, width = 16, height = 6, units = "cm")
 }
+
+plot_allometry <- function(allometric_model, path){
+
+  suppressPackageStartupMessages({
+    require(tidyverse)
+    require(tidybayes)
+    require(ggdist)
+  })
+
+  add_fitted_draws(
+    newdata = tidyr::expand_grid(
+      rostrum_length_cm = seq(min(allometric_model$data$rostrum_length_cm),
+                              max(allometric_model$data$rostrum_length_cm),
+                              length.out = 10),
+      species = "Pristis pristis"),
+    model = allometric_model) %>%
+    ungroup() %>%
+    mutate(across(c(rostrum_length_cm, .value), exp)) %>%
+    ggplot(aes(x = rostrum_length_cm/100, y = .value/100)) +
+    stat_lineribbon(aes(alpha = forcats::fct_rev(ordered(stat(.width)))),
+                    .width = c(0.05, 0.66, 0.95), size = 0.5, fill = "grey30") +
+    geom_point(data = filter(allometric_model$data, species == "Pristis pristis"),
+               aes(y = exp(total_length_cm)/100,
+                   x = exp(rostrum_length_cm)/100),
+               shape = 21, size = 1.5) +
+    # scale_x_log10(breaks = c(0.25, 0.5, 1, 2)) +
+    # scale_y_log10(breaks = c(2.5/4, 2.5/2, 2.5, 5, 10)) +
+    theme_minimal(base_size = 10) +
+    theme(legend.position = "none",
+          title = element_text(size = 9)) +
+    labs(x = "Rostrum length (m)",
+         y = "Total length (m)")
+
+  ggsave(path, width = 8, height = 6, units = "cm")
+}
