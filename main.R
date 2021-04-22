@@ -26,6 +26,7 @@ full_plan <- drake_plan(
   data_exp_notebook = target(rmarkdown::render(knitr_in("notebooks/data-exploration.Rmd"))),
   paper_notebook = target(rmarkdown::render(knitr_in("notebooks/paper-document.Rmd"))),
   fig_map_pdf = plot_map(encounters, file_out("figures/map.pdf")),
+  fig_encounters_pdf = plot_histogram(encounters, file_out("figures/encounters.pdf")),
   fig_length_pdf =  ggplot2::ggsave(plot = fig_max_length_vs_time,
                                     file_out("figures/length-time.pdf"), width = 8, height = 8, units = "cm")
 )

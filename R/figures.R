@@ -72,3 +72,32 @@ plot_map <- function(encounters, path){
 
   ggsave(path, width = 8, height = 15, units = "cm")
 }
+
+plot_histogram <- function(encounters, path){
+
+  suppressPackageStartupMessages({
+    require(tidyverse)
+  })
+
+  enc_data <- encounters %>%
+    filter(reported_collection_year > 1800) %>%
+    mutate(source_type = fct_recode(source_type,
+                                    "Museum" = "Museum Collection",
+                                    "Non-interview" = "Non-interview observation"),
+           source_type = fct_reorder(source_type, reported_collection_year, median),
+           country = fct_infreq(country))
+
+  enc_data %>%
+    ggplot(aes(x = reported_collection_year, fill = source_type)) +
+    geom_histogram(binwidth = 10, center = 2000) +
+    facet_wrap("country", ncol = 2) +
+    scale_fill_viridis_d(guide = guide_legend(keywidth = 0.7, keyheight = 0.7)) +
+    theme_minimal(base_size = 10) +
+    theme(legend.position = "top",
+          legend.title = element_blank(),
+          title = element_text(size = 9))  +
+    labs(x = "Reported collection year",
+         y = "Number of encounters")
+
+  ggsave(path, width = 16, height = 6, units = "cm")
+}
