@@ -136,3 +136,32 @@ plot_allometry <- function(allometric_model, path){
 
   ggsave(path, width = 8, height = 6, units = "cm")
 }
+
+
+plot_random_intercepts <- function(max_length_model, path){
+
+  suppressPackageStartupMessages({
+    require(tidyverse)
+    require(tidybayes)
+    require(ggdist)
+  })
+
+  max_length_model %>%
+    gather_draws(r_source_type[source_type,Intercept]) %>%
+    ungroup() %>%
+    mutate(source_type = fct_recode(source_type,
+                                    "Museum" = "Museum.Collection",
+                                    "Non-interview" = "Non-interview.observation"),
+           source_type = fct_reorder(source_type, .value, .desc = T)) %>%
+    ggplot(aes(x = .value, y = source_type)) +
+    stat_pointinterval(.width = c(0.66, 0.9),
+                       interval_size_range = c(0.5,1), fatten_point = 1.2) +
+    geom_vline(xintercept = 0, linetype = 2, size = 0.25) +
+    theme_minimal(base_size = 10) +
+    theme(title = element_text(size = 9),
+          axis.title.y = element_blank(),
+          panel.grid.major.y = element_blank()) +
+    labs(x = "Intercept")
+
+  ggsave(path, width = 8, height = 3.5, units = "cm")
+}
