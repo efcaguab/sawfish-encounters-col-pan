@@ -48,14 +48,14 @@ Hamiltonian Markov Chain Monte Carlo algorithm implemented in `Stan`
 The relationship between rostrum and total length for the largetooth
 sawfish *Pristis pristis* was approximately isometric (Supporting
 Information S1). Indeed the estimated allometric coefficient between
-these two metric was 0.9 (90% credible interval 0.83 to 1).
+these two metric was 0.9 (90% credible interval 0.82 to 0.99).
 
 The total length model was based on 20 records. In five of them, total
 length was estimated using the allometric relationship between rostrum
-and total length. There is a 92.8% probability that the total length of
+and total length. There is a 93.6% probability that the total length of
 the largest observed sawfish individuals (*Pristis pristis*) has
 decreased between 1896 and 2016 (Figure XXa, Table S2). The median rate
-of this decrease is 5% per decade (90% CI -0.8% to 12.1%; Figure XXb).
+of this decrease is 6% per decade (90% CI -0.6% to 12.3%; Figure XXb).
 We found no substantial differences between the intercepts of different
 record sources (Figure S2).
 
@@ -96,8 +96,8 @@ The model accounted for a large proportion of variance in total length
 (R<sup>2</sup> = 0.98, 90% CI 0.96 to 0.99). Total length scales
 isometrically with rostrum length in *Pristis pristis* (Figure S1; Table
 S1). Using the model coefficients, the estimated allometric coefficient
-between these two metric was 0.9 (90% credible interval 0.83 to 1). The
-estimated allometric intercept was -0.92 (90% CI -1.44 to -0.52).
+between these two metric was 0.9 (90% credible interval 0.82 to 0.99).
+The estimated allometric intercept was -0.92 (90% CI -1.39 to -0.51).
 
 ### S2: Including all size records
 
@@ -108,9 +108,9 @@ records was based on 54 records. In five of them, total length was
 estimated using the allometric relationship between rostrum and total
 length. In this alternative model, total length of encountered sawfish
 (*Pristis pristis*) individuals was also very likely to decrease over
-the years (52.6% probability). The estimated coefficient for the year
-parameter was -0.02 (90% CI -0.48 to 0.42). This coefficient corresponds
-to a median rate of decrease of 0% per decade (90% CI -9.6% to 9.5%).
+the years (52.7% probability). The estimated coefficient for the year
+parameter was -0.02 (90% CI -0.49 to 0.41). This coefficient corresponds
+to a median rate of decrease of 0% per decade (90% CI -9.5% to 9.7%).
 
 ### Supplementary Figures
 
@@ -134,21 +134,21 @@ credible intervals of the intercept.*
 correspond to 95% credible intervals*.
 
 | effect    | group    | term                | estimate | conf.low | conf.high |
-| :-------- | :------- | :------------------ | -------: | -------: | --------: |
-| fixed     | \-       | (Intercept)         |     0.44 |   \-3.81 |      2.24 |
-| fixed     | \-       | rostrum\_length\_cm |     1.10 |     0.96 |      1.24 |
-| ran\_pars | species  | sd\_\_(Intercept)   |     1.33 |     0.03 |      5.87 |
-| ran\_pars | Residual | sd\_\_Observation   |     0.16 |     0.09 |      0.30 |
+|:----------|:---------|:--------------------|---------:|---------:|----------:|
+| fixed     | \-       | (Intercept)         |     0.45 |    -3.80 |      2.16 |
+| fixed     | \-       | rostrum\_length\_cm |     1.11 |     0.98 |      1.24 |
+| ran\_pars | species  | sd\_\_(Intercept)   |     1.25 |     0.03 |      5.74 |
+| ran\_pars | Residual | sd\_\_Observation   |     0.16 |     0.09 |      0.29 |
 
 *Table S2: Model coefficients for the total length model. Intervals
 correspond to 95% credible intervals*.
 
 | effect    | group        | term              | estimate | conf.low | conf.high |
-| :-------- | :----------- | :---------------- | -------: | -------: | --------: |
-| fixed     | \-           | (Intercept)       |   \-0.33 |   \-1.01 |      0.37 |
-| fixed     | \-           | scaled\_year      |   \-0.34 |   \-0.80 |      0.13 |
+|:----------|:-------------|:------------------|---------:|---------:|----------:|
+| fixed     | \-           | (Intercept)       |    -0.33 |    -1.03 |      0.35 |
+| fixed     | \-           | scaled\_year      |    -0.35 |    -0.81 |      0.12 |
 | ran\_pars | observation  | sd\_\_(Intercept) |     0.93 |     0.66 |      1.36 |
-| ran\_pars | source\_type | sd\_\_(Intercept) |     0.37 |     0.01 |      1.33 |
+| ran\_pars | source\_type | sd\_\_(Intercept) |     0.38 |     0.01 |      1.39 |
 
 ## References
 

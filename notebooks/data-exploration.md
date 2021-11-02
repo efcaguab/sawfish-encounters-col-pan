@@ -86,7 +86,7 @@ Panama’s Pacific. There is also a strong bias of the year of different
 source types. It would be important to take these biases into account.
 
 In addition a group of records from museums that have small individuals
-(\< 1.5 meters) that might not be easily explained by the current
+(&lt; 1.5 meters) that might not be easily explained by the current
 strata. Similar cases for literature sourced encounters where a range of
 sizes is available for a given year.
 
@@ -170,17 +170,9 @@ map_data <-
   filter(latitude > 0)
 ```
 
-    ## Warning: Problem with `mutate()` input `..2`.
-    ## ℹ NAs introduced by coercion
-    ## ℹ Input `..2` is `across(c(longitude, latitude), as.numeric)`.
+    ## Warning in mask$eval_all_mutate(quo): NAs introduced by coercion
 
-    ## Warning in fn(col, ...): NAs introduced by coercion
-
-    ## Warning: Problem with `mutate()` input `..2`.
-    ## ℹ NAs introduced by coercion
-    ## ℹ Input `..2` is `across(c(longitude, latitude), as.numeric)`.
-
-    ## Warning in fn(col, ...): NAs introduced by coercion
+    ## Warning in mask$eval_all_mutate(quo): NAs introduced by coercion
 
 ``` r
 p1 <- ggplot(data = map_data) + 

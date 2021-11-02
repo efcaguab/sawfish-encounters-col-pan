@@ -118,7 +118,7 @@ plot_length_vs_time <- function(model_fitted_draws, max_length_model_data){
     scale_y_continuous(labels = scales::number_format(scale = 1/100)) +
     scale_x_continuous() +
     scale_alpha_discrete(range = c(0.1, 0.5)) +
-    theme_minimal(base_size = 10) +
+    theme_bw(base_size = 10) +
     theme(axis.title = element_text(size = 9),
           legend.position = "none",
           title = element_text(size = 9)) +
