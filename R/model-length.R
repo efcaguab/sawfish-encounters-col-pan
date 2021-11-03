@@ -125,5 +125,32 @@ plot_length_vs_time <- function(model_fitted_draws, max_length_model_data){
     labs(x = "Year",
          y = "Total length (m)")
 
-  return(p1)
+
+  p2 <- model_fitted_draws %>%
+    group_by(.draw, source_type) %>%
+    mutate(ten_year_diff = (.value - lead(.value, 10))/.value) %>%
+    filter(!is.na(ten_year_diff),
+           source_type == "Overall") %>%
+    ggplot(aes(x = ten_year_diff)) +
+    stat_halfeye(slab_alpha = 0.33, fill = "grey30", .width = c(0.66, 0.9),
+                 interval_size_range = c(0.5,1), fatten_point = 1.2) +
+    geom_vline(xintercept = 0, linetype = 2, size = 0.25) +
+    scale_x_continuous(labels = scales::label_percent()) +
+    coord_cartesian(xlim = c(0, NA)) +
+    labs(x = "Rate of decrease (per decade)",
+         y = "Density") +
+    theme_bw(base_size = 10) +
+    theme(axis.title = element_text(size = 9),
+          axis.text.y = element_blank(),
+          axis.ticks.y = element_blank(),
+          panel.grid.major.y = element_blank(),
+          panel.grid.minor.y = element_blank(),
+          axis.title.y = element_blank(),
+          title = element_text(size = 9))
+
+  p <- p1 + p2 +
+    plot_layout(ncol = 1, heights = c(1,0.2)) +
+    plot_annotation(tag_levels = "a", tag_suffix = ")")
+
+  return(p)
 }
